@@ -1,7 +1,5 @@
 package uniquindio.edu.co.binarytree.model;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
-
 /*
  Clase Arbol Binario
  */
@@ -35,6 +33,8 @@ public class BinaryTree {
 
     //metodo para recorrer arbol binario izquierda - raiz - derecha
     public void inorder(){
+        if(weight == 0)
+            System.out.println("El arbol esta vacio");
         inorder(root);
     }
 
@@ -49,6 +49,8 @@ public class BinaryTree {
 
     //metodo para recorrer arbol binario raiz - izquierda - derecha
     public void preorder(){
+        if(weight == 0)
+            System.out.println("El arbol esta vacio");
         preorder(root);
     }
 
@@ -63,6 +65,8 @@ public class BinaryTree {
 
     //metodo para recorrer arbol binario izquierda-derecha.raiz
     public void postorder(){
+        if(weight == 0)
+            System.out.println("El arbol esta vacio");
         postorder(root);
     }
 
@@ -103,10 +107,12 @@ public class BinaryTree {
         return weight;
     }
 
+    //metodo para obtener la altura del arbol
     public int getHeight(){
         return getHeight(root, 0);
     }
 
+    //metodo recursivo para obtener la altura del arbol
     private int getHeight(Node aux, int height){
         if (aux == null) {
             return height;
@@ -116,10 +122,12 @@ public class BinaryTree {
         return Math.max(leftHeight, rightHeight) ;
     }
 
+    //metodo para obtener el nivel de un nodo
     public int getLevel(int data){
         return getLevel(data, root, 0);
     }
 
+    //metodo recursivo para obtener el nivel de un nodo
     private int getLevel(int data, Node aux, int level){
         if (!search(data)) {
             System.out.println("No existe el elemento");
@@ -133,5 +141,85 @@ public class BinaryTree {
         return Math.max(leftHeight, rightHeight) ;
     }
 
+    //metodo para obtener el menor dado un nodo
+    private int getMin(Node node){
+        int min = node.getData();
+        while(node.getChildLeft() != null){
+            min = node.getChildLeft().getData();
+            node = node.getChildLeft();
+        }
+
+        return min;
+    }
+
+    //metodo para eliminar un nodo
+    public void deleteNode(int data){
+        root = deleteNode(root, data);
+        weight--;
+    }
+
+    //metodo recursivo para eliminar un nodo
+    private Node deleteNode(Node aux, int data) {
+        if(aux == null)
+            return null;
+        if(aux.getData() > data)
+            return deleteNode(aux.getChildLeft(), data);
+        else if (aux.getData() < data)
+            return deleteNode(aux.getChildRight(), data);
+        else{
+            if(aux.getChildLeft() == null)
+                return aux.getChildRight();
+            if(aux.getChildRight() == null)
+                return aux.getChildLeft();
+            aux.setData(getMin(aux.getChildRight()));
+            aux.setChildRight(deleteNode(aux.getChildRight(), aux.getData()));
+        }
+        return aux;
+    }
+
+    //metodo para contar hojas
+    public int countLeaves(){
+        return countLeaves(root);
+    }
+
+    //metodo recursivo para contar hojas
+    private int countLeaves(Node aux){
+        if(aux == null){
+            return 0;
+        }
+        if(aux.getChildLeft() == null && aux.getChildRight() == null)
+            return 1;
+        int l = countLeaves(aux.getChildLeft());
+        int r = countLeaves(aux.getChildRight());
+        return l+r;
+    }
+
+    //metodo para obtener el nodo minimo en el arbol
+    public int getMinor(){
+        Node aux = root;
+        while(aux.getChildLeft() != null){
+            aux = aux.getChildLeft();
+        }
+        return aux.getData();
+    }
+
+    //metodo para obtener el nodo mayor en el arbol
+    public int getMayor(){
+        Node aux = root;
+        while(aux.getChildRight() != null){
+            aux = aux.getChildRight();
+        }
+        return aux.getData();
+    }
+
+    //metodo para eliminar el arbol
+    public void deleteTree(){
+        root = null;
+        weight = 0;
+    }
+
+    public void printAmplitude(){
+        
+    }
 
 }
